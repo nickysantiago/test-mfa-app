@@ -1,0 +1,10 @@
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/SecurityConfig.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaAuthenticationProvider.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/CustomAuthenticationSuccessHandler.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaAuthenticationFilter.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/HelloController.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaAuthenticationToken.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaDemoApplication.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaService.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaSuccessHandler.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/SimpleMfaService.java

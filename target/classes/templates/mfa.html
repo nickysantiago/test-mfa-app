@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Enter MFA Code</h2>
+<form th:action="@{/mfa/verify}" method="post">
+  Code: <input type="text" name="code"><br>
+  <button type="submit">Verify</button>
+</form>
+</body>
+</html>
