@@ -11,8 +11,14 @@ import java.io.IOException;
 
 @Controller
 public class MainController {
+    
     @GetMapping("/login")
-    public String login() {
+    public String login(Principal principal, HttpServletResponse res) throws IOException {
+        // If user is already fully authenticated, redirect to home
+        if (principal != null) {
+            res.sendRedirect("/home");
+            return null;
+        }
         return "login";
     }
 
@@ -24,7 +30,13 @@ public class MainController {
     }
 
     @GetMapping("/mfa")
-    public String mfaPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public String mfaPage(HttpServletRequest req, HttpServletResponse res, Principal principal) throws IOException {
+        // If user is already fully authenticated, redirect to home
+        if (principal != null) {
+            res.sendRedirect("/home");
+            return null;
+        }
+        
         // Check if user has completed username/password authentication
         String preAuthUsername = (String) req.getSession().getAttribute("PRE_AUTH_USERNAME");
         
