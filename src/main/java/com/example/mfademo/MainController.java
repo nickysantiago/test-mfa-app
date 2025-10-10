@@ -5,7 +5,9 @@ import org.springframework.ui.Model;
 import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
-// import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Controller
 public class MainController {
@@ -14,20 +16,24 @@ public class MainController {
         return "login";
     }
 
-   /*  @GetMapping("/home")
-    public String home() {
-        return "home";
-    } */
-
     // Display success page after full authentication
     @GetMapping("/home")
     public String home(Model model, Principal principal) {
         model.addAttribute("username", principal.getName());
-        return "home"; // returns home.html
+        return "home";
     }
 
     @GetMapping("/mfa")
-    public String mfaPage() {
+    public String mfaPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        // Check if user has completed username/password authentication
+        String preAuthUsername = (String) req.getSession().getAttribute("PRE_AUTH_USERNAME");
+        
+        if (preAuthUsername == null) {
+            // No pre-auth session - redirect to login
+            res.sendRedirect("/login");
+            return null;
+        }
+        
         return "mfa";
     }
 
