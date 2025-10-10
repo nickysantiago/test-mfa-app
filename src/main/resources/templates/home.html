@@ -2,5 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <h1>Hello, you're logged in with MFA!</h1>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Log Out</button>
+</form>
 </body>
 </html>

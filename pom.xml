@@ -25,13 +25,12 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Thymeleaf optional (not required for plain text) -->
-    <!--
+    <!-- Thymeleaf  -->
+    
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
-    -->
 
     <!-- Spring Security -->
     <dependency>

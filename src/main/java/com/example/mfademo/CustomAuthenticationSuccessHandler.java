@@ -1,6 +1,7 @@
 package main.java.com.example.mfademo;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -25,14 +26,22 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         UserDetails user = (UserDetails) auth.getPrincipal();
 
         if (mfaService.isMfaEnabled(user.getUsername())) {
-            MfaAuthenticationToken pre = new MfaAuthenticationToken(user.getUsername());
-            pre.setDetails(auth.getDetails());
+            // Store username for MFA verification step
             req.getSession().setAttribute("PRE_AUTH_USERNAME", user.getUsername());
-            req.getSession().setAttribute("SPRING_SECURITY_CONTEXT", null); // clear full auth
+            
+            // CRITICAL: Clear the authentication from SecurityContext
+            // This prevents the user from being fully authenticated until MFA is complete
+            SecurityContextHolder.clearContext();
+            
+            // Also clear it from the session explicitly
+            req.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+            
+            // Redirect to MFA page
             res.sendRedirect("/mfa");
             return;
         }
 
+        // No MFA required - proceed to original destination
         SavedRequest saved = requestCache.getRequest(req, res);
         String target = (saved != null) ? saved.getRedirectUrl() : "/";
         res.sendRedirect(target);

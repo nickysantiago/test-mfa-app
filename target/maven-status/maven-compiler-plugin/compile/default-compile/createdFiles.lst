@@ -2,8 +2,8 @@ main/java/com/example/mfademo/MfaService.class
 main/java/com/example/mfademo/MfaDemoApplication.class
 main/java/com/example/mfademo/MfaSuccessHandler.class
 main/java/com/example/mfademo/MfaAuthenticationProvider.class
+main/java/com/example/mfademo/MainController.class
 main/java/com/example/mfademo/SecurityConfig.class
-main/java/com/example/mfademo/HelloController.class
 main/java/com/example/mfademo/SimpleMfaService.class
 main/java/com/example/mfademo/MfaAuthenticationFilter.class
 main/java/com/example/mfademo/CustomAuthenticationSuccessHandler.class
