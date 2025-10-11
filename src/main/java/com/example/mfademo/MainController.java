@@ -13,16 +13,15 @@ import java.io.IOException;
 public class MainController {
     
     @GetMapping("/login")
-    public String login(Principal principal, HttpServletResponse res) throws IOException {
+    public String login(Principal principal) throws IOException {
         // If user is already fully authenticated, redirect to home
+        // (This is a backup; .anonymous() should prevent authenticated users from reaching here)
         if (principal != null) {
-            res.sendRedirect("/home");
-            return null;
+            return "redirect:/home";
         }
         return "login";
     }
 
-    // Display success page after full authentication
     @GetMapping("/home")
     public String home(Model model, Principal principal) {
         model.addAttribute("username", principal.getName());
@@ -49,7 +48,6 @@ public class MainController {
         return "mfa";
     }
 
-    // Root just redirects to /home
     @GetMapping("/")
     public String root() {
         return "redirect:/home";

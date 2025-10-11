@@ -1,4 +1,5 @@
 /Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/SecurityConfig.java
+/Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/AuthenticatedUserRedirectFilter.java
 /Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MfaAuthenticationProvider.java
 /Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/CustomAuthenticationSuccessHandler.java
 /Users/nsantiago/Desktop/test-mfa-app/src/main/java/com/example/mfademo/MainController.java

@@ -18,8 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    // Defines an in-memory user details service for testing/demo purposes.
-    // Creates a single user with username 'user1' and password 'password'.
     @Bean
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(
@@ -27,23 +25,17 @@ public class SecurityConfig {
         );
     }
 
-    // Defines the password encoder to use.
-    // NoOpPasswordEncoder performs no encoding (plaintext passwords) — not for production use.
     @Bean
     @SuppressWarnings("deprecation")
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    // Custom authentication provider for handling MFA logic.
-    // It uses the UserDetailsService for user lookup and MfaService for verifying MFA codes.
     @Bean
     public MfaAuthenticationProvider mfaAuthenticationProvider(UserDetailsService uds, MfaService mfaService) {
         return new MfaAuthenticationProvider(uds, mfaService);
     }
 
-    // Standard DAO-based authentication provider (username/password authentication).
-    // This is the default provider type used by Spring Security.
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService uds, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -52,8 +44,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Builds and exposes the AuthenticationManager bean used for authentication.
-    // Registers both the standard DAO provider and the custom MFA provider.
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
                                                        DaoAuthenticationProvider daoProvider,
@@ -61,55 +51,41 @@ public class SecurityConfig {
 
         AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
         
-        // Add both authentication providers in the desired order
         amb.authenticationProvider(daoProvider);
         amb.authenticationProvider(mfaProvider);
 
         return amb.build();
     }
 
-    // Defines the security filter chain for HTTP requests.
-    // Configures routes, login/logout behavior, and integrates the MFA filter.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            AuthenticationManager authManager,
                                            CustomAuthenticationSuccessHandler customSuccessHandler) throws Exception {
 
-        // Create and configure the custom MFA authentication filter
         MfaAuthenticationFilter mfaFilter = new MfaAuthenticationFilter();
         mfaFilter.setAuthenticationManager(authManager);
         mfaFilter.setAuthenticationSuccessHandler(new MfaSuccessHandler());
         mfaFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/mfa?error"));
 
         http
-          // Set the AuthenticationManager to be used across the filter chain
           .authenticationManager(authManager)
           .authorizeRequests()
-            // Allow public access to login and home pages
-            .antMatchers("/", "/login").permitAll()
-            // Allow access to MFA verification endpoints
-            .antMatchers("/mfa", "/mfa/verify").permitAll()
-            // Require authentication for all other requests
+            .antMatchers("/", "/login", "/mfa", "/mfa/verify").permitAll()
             .anyRequest().authenticated()
             .and()
-          // Configure form-based login
           .formLogin()
-            // Custom success handler redirects user based on MFA status
             .successHandler(customSuccessHandler)
             .permitAll()
             .and()
-          // Configure logout handling
           .logout()
-            .logoutUrl("/logout")              // POST endpoint for logging out
-            .logoutSuccessUrl("/login")        // Redirect to login after logout
-            .invalidateHttpSession(true)       // Invalidate session on logout
-            .deleteCookies("JSESSIONID")       // Clear session cookie
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
             .permitAll();
 
-        // Add the custom MFA filter before the standard UsernamePasswordAuthenticationFilter
         http.addFilterBefore(mfaFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Build and return the finalized security configuration
         return http.build();
     }
 }
