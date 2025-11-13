@@ -13,6 +13,33 @@ pipeline {
                 }
             }
         }
+	stage('Upload Artifacts to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: '192.168.0.1:8094',
+                    groupId: 'com.example',
+                    version: '0.0.1-SNAPSHOT',
+                    repository: 'mvn-repo',
+                    credentialsId: 'nexus-jenkins',
+                    artifacts: [
+                        [
+                            artifactId: 'mfa-demo',
+                            classifier: '',
+                            file: 'target/mfa-demo-0.0.1-SNAPSHOT.jar',
+                            type: 'jar'
+                        ],
+                        [
+                            artifactId: 'mfa-demo',
+                            classifier: '',
+                            file: 'pom.xml',
+                            type: 'pom'
+                        ]
+                    ]
+                )
+            }
+        }
         stage('Test') {
             steps {
                 sh 'echo "This is the test stage..."'
