@@ -18,10 +18,10 @@ pipeline {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: '192.168.0.1:8094',
+                    nexusUrl: '192.168.0.101:8094',
                     groupId: 'com.example',
                     version: '0.0.1-SNAPSHOT',
-                    repository: 'mvn-snapshots',
+                    repository: 'mvn-repo',
                     credentialsId: 'nexus-jenkins',
                     artifacts: [
                         [
