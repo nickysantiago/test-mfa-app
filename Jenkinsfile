@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git branch: 'main',
+                git branch: 'integrate-nexus',
                 url: 'https://github.com/nickysantiago/test-mfa-app.git'
                 withMaven {
                     sh "mvn clean package"
@@ -21,7 +21,7 @@ pipeline {
                     nexusUrl: '192.168.0.1:8094',
                     groupId: 'com.example',
                     version: '0.0.1-SNAPSHOT',
-                    repository: 'mvn-repo',
+                    repository: 'mvn-snapshots',
                     credentialsId: 'nexus-jenkins',
                     artifacts: [
                         [
