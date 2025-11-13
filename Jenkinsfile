@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git branch: 'integrate-nexus',
+                git branch: 'main',
                 url: 'https://github.com/nickysantiago/test-mfa-app.git'
                 withMaven {
                     sh "mvn clean package"
