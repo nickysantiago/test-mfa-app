@@ -23,6 +23,7 @@ pipeline {
                     version: '0.0.1-SNAPSHOT',
                     repository: 'mvn-repo',
                     credentialsId: 'nexus-jenkins',
+		    skipStaging: true,
                     artifacts: [
                         [
                             artifactId: 'mfa-demo',
