@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'echo "This is the test stage..."'
+                sh 'mvn test'
             }
         }
         stage('Deploy') {
