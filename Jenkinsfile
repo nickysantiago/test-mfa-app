@@ -6,8 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git branch: 'main',
-                url: 'https://github.com/nickysantiago/test-mfa-app.git'
+		checkout scm
                 withMaven {
                     sh "mvn clean package"
                 }
