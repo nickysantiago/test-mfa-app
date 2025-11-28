@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM amazoncorretto:17-alpine
 WORKDIR /app
 COPY target/mfa-demo-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
