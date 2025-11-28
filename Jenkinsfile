@@ -47,7 +47,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'echo "This it the deploy stage..."'
+                sh 'scp -o StrictHostKeyChecking=no target/mfa-demo-0.0.1-SNAPSHOT.jar jenkins@sh.nsantiago.me:/home/jenkins/workspace/test-mfa-app/
+                ssh -o StrictHostKeyChecking=no jenkins@sh.nsantiago.me "/home/jenkins/workspace/test-mfa-app/deploy.sh"
             }
         }
     }
