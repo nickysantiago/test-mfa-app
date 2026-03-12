@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-	TARGET_HOST='192.168.0.101'
-	TARGET_USER='jenkins'
+	TARGET_HOST= "${env.TARGET_HOST}"
+	TARGET_USER= "${env.TARGET_USER}"
     }
     tools {
         maven 'mvn-3.9.11' 
