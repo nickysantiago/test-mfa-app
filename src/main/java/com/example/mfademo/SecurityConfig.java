@@ -14,6 +14,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.ProviderManager;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -54,7 +56,7 @@ public class SecurityConfig {
 
     // Builds and exposes the AuthenticationManager bean used for authentication.
     // Registers both the standard DAO provider and the custom MFA provider.
-    @Bean
+   /* @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
                                                        DaoAuthenticationProvider daoProvider,
                                                        MfaAuthenticationProvider mfaProvider) throws Exception {
@@ -66,7 +68,7 @@ public class SecurityConfig {
         amb.authenticationProvider(mfaProvider);
 
         return amb.build();
-    }
+    } */
 
     // Defines the security filter chain for HTTP requests.
     // Configures routes, login/logout behavior, and integrates the MFA filter.
@@ -74,8 +76,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            AuthenticationManager authManager,
                                            CustomAuthenticationSuccessHandler customSuccessHandler) throws Exception {
+	
+	// Build a local Authentication Manager
+        AuthenticationManager localAuthManager = new ProviderManager(
+        List.of(daoProvider, mfaProvider)
+    	);
 
-        // Create and configure the custom MFA authentication filter
+	// Create and configure the custom MFA authentication filter
         MfaAuthenticationFilter mfaFilter = new MfaAuthenticationFilter();
         mfaFilter.setAuthenticationManager(authManager);
         mfaFilter.setAuthenticationSuccessHandler(new MfaSuccessHandler());
