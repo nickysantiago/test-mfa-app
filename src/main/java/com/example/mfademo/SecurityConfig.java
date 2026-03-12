@@ -76,7 +76,7 @@ public class SecurityConfig {
         mfaFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/mfa?error"));
 
         http
-          .authenticationManager(localAuthManager)
+          //.authenticationManager(localAuthManager)
           .authorizeRequests()
             // Allow public access to login page
             .antMatchers("/", "/login").permitAll()
