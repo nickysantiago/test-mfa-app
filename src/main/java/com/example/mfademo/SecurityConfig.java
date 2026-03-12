@@ -98,6 +98,10 @@ public class SecurityConfig {
             .successHandler(customSuccessHandler)
             .permitAll()
             .and()
+	  //Oauth login
+	  .oauth2Login()
+            .defaultSuccessUrl("/home", true)
+            .and()
           // Configure logout handling
           .logout()
             .logoutUrl("/logout")              // POST endpoint for logging out
