@@ -18,10 +18,18 @@ public class MainController {
 
     // Display success page after full authentication
     @GetMapping("/home")
-    public String home(Model model, Principal principal) {
-        model.addAttribute("username", principal.getName());
-        return "home";
-    }
+    public String home(Model model, Authentication authentication) {
+      if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
+        // SSO login via Keycloak
+        model.addAttribute("username", oidcUser.getPreferredUsername());
+        model.addAttribute("loginMethod", "SSO (Keycloak)");
+      } else {
+        // Traditional form login
+        model.addAttribute("username", authentication.getName());
+        model.addAttribute("loginMethod", "Form Login + MFA");
+      }
+      return "home";
+    }  
 
     @GetMapping("/mfa")
     public String mfaPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
