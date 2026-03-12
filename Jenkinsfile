@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+	TARGET_HOST='192.168.0.101'
+	TARGET_USER='jenkins'
+    }
     tools {
         maven 'mvn-3.9.11' 
     }
@@ -48,9 +52,9 @@ pipeline {
             steps {
 		sshagent(['96f5c053-7651-404f-8379-5db4d3ecf58f']) {
 			sh '''
-				scp -o StrictHostKeyChecking=no target/mfa-demo-0.0.1-SNAPSHOT.jar jenkins@sh.nsantiago.me:/home/jenkins/workspace/test-mfa-app/
-				scp -o StrictHostKeyChecking=no Dockerfile jenkins@sh.nsantiago.me:/home/jenkins/workspace/test-mfa-app/
-                		ssh -o StrictHostKeyChecking=no jenkins@sh.nsantiago.me "/home/jenkins/workspace/test-mfa-app/deploy.sh"
+				scp -o StrictHostKeyChecking=no target/mfa-demo-0.0.1-SNAPSHOT.jar ${TARGET_USER}@${TARGET_HOST}:/home/jenkins/workspace/test-mfa-app/
+				scp -o StrictHostKeyChecking=no Dockerfile ${TARGET_USER}@${TARGET_HOST}:/home/jenkins/workspace/test-mfa-app/
+                		ssh -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} "/home/jenkins/workspace/test-mfa-app/deploy.sh"
 			'''
 		}
             }
