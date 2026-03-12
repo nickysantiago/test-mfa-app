@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<h1>Hello, you're logged in with MFA!</h1>
-<form th:action="@{/logout}" method="post">
+  <h1>Welcome, <span th:text="${username}">user</span>!</h1>
+  <p>Logged in via: <strong th:text="${loginMethod}">?</strong></p>
+  <form th:action="@{/logout}" method="post">
     <button type="submit">Log Out</button>
-</form>
+  </form>
 </body>
 </html>
