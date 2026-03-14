@@ -14,11 +14,11 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 
     // Keycloak's end_session endpoint — ends the SSO session on the Keycloak side
     private static final String KEYCLOAK_LOGOUT_URL =
-        "http://127.0.0.1:8777/realms/mfa-demo/protocol/openid-connect/logout";
+        "http://192.168.0.101:8777/realms/mfa-demo/protocol/openid-connect/logout";
 
     // Where Keycloak should send the user after it ends the session
     private static final String POST_LOGOUT_REDIRECT_URI =
-        "http://localhost:8080/login";
+        "http://192.168.0.101:8013/login";
 
     @Override
     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res,
