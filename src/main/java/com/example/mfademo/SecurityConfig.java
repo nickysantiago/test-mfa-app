@@ -61,7 +61,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            DaoAuthenticationProvider daoProvider,
                                            MfaAuthenticationProvider mfaProvider,
-                                           CustomAuthenticationSuccessHandler customSuccessHandler) throws Exception {
+                                           CustomAuthenticationSuccessHandler customSuccessHandler,
+                                           KeycloakLogoutHandler keycloakLogoutHandler) throws Exception {
 
         // Build a local AuthenticationManager scoped to form login and MFA only.
         // This avoids overriding Spring's global manager, which handles OAuth2 login.
@@ -98,7 +99,8 @@ public class SecurityConfig {
           // Configure logout handling
           .logout()
             .logoutUrl("/logout")
-            .logoutSuccessUrl("/login")
+            // .logoutSuccessUrl("/login") 
+            .logoutSuccessHandler(keycloakLogoutHandler)
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .permitAll();
