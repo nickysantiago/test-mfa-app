@@ -9,34 +9,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
 @Component
 public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 
-    // Keycloak's end_session endpoint — ends the SSO session on the Keycloak side
-    private static final String KEYCLOAK_LOGOUT_URL =
-        "http://192.168.0.101:8777/realms/test-mfa-app/protocol/openid-connect/logout";
+    @Value("${app.keycloak.logout-url}")
+    private String keycloakLogoutUrl;
 
-    // Where Keycloak should send the user after it ends the session
-    private static final String POST_LOGOUT_REDIRECT_URI =
-        "http://192.168.0.101:8013/login";
+    @Value("${app.base-url}")
+    private String appBaseUrl;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res,
                                 Authentication auth) throws IOException {
 
         if (auth != null && auth.getPrincipal() instanceof OidcUser oidcUser) {
-            // For SSO users, redirect to Keycloak's logout endpoint
-            // id_token_hint tells Keycloak which session to end
             String idToken = oidcUser.getIdToken().getTokenValue();
+            String postLogoutUri = appBaseUrl + "/login";
 
-            String keycloakLogout = KEYCLOAK_LOGOUT_URL
+            String logoutUrl = keycloakLogoutUrl
                 + "?id_token_hint=" + idToken
-                + "&post_logout_redirect_uri=" + POST_LOGOUT_REDIRECT_URI;
+                + "&post_logout_redirect_uri=" + postLogoutUri;
 
-            res.sendRedirect(keycloakLogout);
+            res.sendRedirect(logoutUrl);
         } else {
-            // For form login users, just redirect to login as before
-            res.sendRedirect(POST_LOGOUT_REDIRECT_URI);
+            res.sendRedirect(appBaseUrl + "/login");
         }
     }
 }
