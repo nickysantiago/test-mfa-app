@@ -40,7 +40,7 @@ public class BambooHrOAuthController {
             "?request=authorize" +
             "&response_type=code" +
             "&state=bamboohr-state" +
-            "&scope=employees.read" +
+            "&scope=employee_directory" +
             "&client_id=" + clientId +
             "&redirect_uri=" + redirectUri;
 
