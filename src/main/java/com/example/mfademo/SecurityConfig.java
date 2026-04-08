@@ -3,8 +3,8 @@ package main.java.com.example.mfademo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +14,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -52,40 +53,33 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Builds and exposes the AuthenticationManager bean used for authentication.
-    // Registers both the standard DAO provider and the custom MFA provider.
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http,
-                                                       DaoAuthenticationProvider daoProvider,
-                                                       MfaAuthenticationProvider mfaProvider) throws Exception {
-
-        AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
-        
-        // Add both authentication providers in the desired order
-        amb.authenticationProvider(daoProvider);
-        amb.authenticationProvider(mfaProvider);
-
-        return amb.build();
-    }
-
     // Defines the security filter chain for HTTP requests.
     // Configures routes, login/logout behavior, and integrates the MFA filter.
+    // Note: AuthenticationManager is built locally so it does not replace Spring's
+    // default one, which is required for OAuth2/SSO login to work correctly.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           AuthenticationManager authManager,
-                                           CustomAuthenticationSuccessHandler customSuccessHandler) throws Exception {
+                                           DaoAuthenticationProvider daoProvider,
+                                           MfaAuthenticationProvider mfaProvider,
+                                           CustomAuthenticationSuccessHandler customSuccessHandler,
+                                           KeycloakLogoutHandler keycloakLogoutHandler) throws Exception {
+
+        // Build a local AuthenticationManager scoped to form login and MFA only.
+        // This avoids overriding Spring's global manager, which handles OAuth2 login.
+        AuthenticationManager localAuthManager = new ProviderManager(
+            List.of(daoProvider, mfaProvider)
+        );
 
         // Create and configure the custom MFA authentication filter
         MfaAuthenticationFilter mfaFilter = new MfaAuthenticationFilter();
-        mfaFilter.setAuthenticationManager(authManager);
+        mfaFilter.setAuthenticationManager(localAuthManager);
         mfaFilter.setAuthenticationSuccessHandler(new MfaSuccessHandler());
         mfaFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/mfa?error"));
 
         http
-          // Set the AuthenticationManager to be used across the filter chain
-          .authenticationManager(authManager)
+          //.authenticationManager(localAuthManager)
           .authorizeRequests()
-            // Allow public access to login and home pages
+            // Allow public access to login page
             .antMatchers("/", "/login").permitAll()
             // Allow access to MFA verification endpoints
             .antMatchers("/mfa", "/mfa/verify").permitAll()
@@ -98,18 +92,22 @@ public class SecurityConfig {
             .successHandler(customSuccessHandler)
             .permitAll()
             .and()
+          // Configure SSO login via Keycloak (OAuth2/OIDC)
+          .oauth2Login()
+            .defaultSuccessUrl("/home", true)
+            .and()
           // Configure logout handling
           .logout()
-            .logoutUrl("/logout")              // POST endpoint for logging out
-            .logoutSuccessUrl("/login")        // Redirect to login after logout
-            .invalidateHttpSession(true)       // Invalidate session on logout
-            .deleteCookies("JSESSIONID")       // Clear session cookie
+            .logoutUrl("/logout")
+            // .logoutSuccessUrl("/login") 
+            .logoutSuccessHandler(keycloakLogoutHandler)
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
             .permitAll();
 
         // Add the custom MFA filter before the standard UsernamePasswordAuthenticationFilter
         http.addFilterBefore(mfaFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Build and return the finalized security configuration
         return http.build();
     }
 }
