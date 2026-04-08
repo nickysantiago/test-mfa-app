@@ -3,6 +3,9 @@
 <body>
   <h1>Welcome, <span th:text="${username}">user</span>!</h1>
   <p>Logged in via: <strong th:text="${loginMethod}">?</strong></p>
+  <a href="/bamboohr/connect">
+    <button type="button">Connect BambooHR</button>
+  </a>
   <form th:action="@{/logout}" method="post">
     <button type="submit">Log Out</button>
   </form>

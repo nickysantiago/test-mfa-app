@@ -80,7 +80,7 @@ public class SecurityConfig {
           //.authenticationManager(localAuthManager)
           .authorizeRequests()
             // Allow public access to login page
-            .antMatchers("/", "/login").permitAll()
+            .antMatchers("/", "/login", "/bamboohr/connect", "/bamboohr/callback").permitAll()
             // Allow access to MFA verification endpoints
             .antMatchers("/mfa", "/mfa/verify").permitAll()
             // Require authentication for all other requests
