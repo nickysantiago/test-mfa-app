@@ -1,3 +1,5 @@
+package main.java.com.example.mfademo;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
