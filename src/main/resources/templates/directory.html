@@ -1,12 +1,10 @@
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <h2>BambooHR Employee Directory</h2>
+  <ul th:each="emp : ${employees}">
+    <li th:text="${emp['displayName']}">Employee Name</li>
+  </ul>
+  <a href="/home">Back to Home</a>
+</body>
+</html>
