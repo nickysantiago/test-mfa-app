@@ -100,7 +100,7 @@ public class SecurityConfig {
           .logout()
             .logoutUrl("/logout")
             // .logoutSuccessUrl("/login") 
-            .logoutSuccessHandler(keycloakLogoutHandler)
+            .logoutSuccessHandler(auth0LogoutHandler)
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .permitAll();

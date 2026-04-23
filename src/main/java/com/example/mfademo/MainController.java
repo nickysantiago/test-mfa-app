@@ -19,6 +19,7 @@ public class MainController {
         return "login";
     }
 
+/*
     // Display success page after full authentication
     @GetMapping("/home")
     public String home(Model model, Authentication authentication) {
@@ -33,6 +34,23 @@ public class MainController {
       }
       return "home";
     }  
+*/
+    @GetMapping("/home")
+    public String home(Model model, Authentication authentication) {
+        if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
+            // Auth0 does not populate preferred_username by default
+            // Use nickname with a fallback to email
+            String username = oidcUser.getNickname() != null
+                ? oidcUser.getNickname()
+                : oidcUser.getEmail();
+            model.addAttribute("username", username);
+            model.addAttribute("loginMethod", "SSO (Auth0)");
+        } else {
+            model.addAttribute("username", authentication.getName());
+            model.addAttribute("loginMethod", "Form Login + MFA");
+        }
+        return "home";
+    }
 
     @GetMapping("/mfa")
     public String mfaPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
