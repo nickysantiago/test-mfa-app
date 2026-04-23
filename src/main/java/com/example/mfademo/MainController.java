@@ -38,11 +38,11 @@ public class MainController {
     @GetMapping("/home")
     public String home(Model model, Authentication authentication) {
         if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
-            // Auth0 does not populate preferred_username by default
-            // Use nickname with a fallback to email
-            String username = oidcUser.getNickname() != null
-                ? oidcUser.getNickname()
-                : oidcUser.getEmail();
+            // getAttribute() reads directly from the token claims map
+            // nickname is what Auth0 populates; fall back to email if absent
+            String nickname = (String) oidcUser.getAttribute("nickname");
+            String username = nickname != null ? nickname : oidcUser.getEmail();
+
             model.addAttribute("username", username);
             model.addAttribute("loginMethod", "SSO (Auth0)");
         } else {
