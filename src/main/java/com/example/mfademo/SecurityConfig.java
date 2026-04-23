@@ -62,7 +62,7 @@ public class SecurityConfig {
                                            DaoAuthenticationProvider daoProvider,
                                            MfaAuthenticationProvider mfaProvider,
                                            CustomAuthenticationSuccessHandler customSuccessHandler,
-                                           KeycloakLogoutHandler keycloakLogoutHandler) throws Exception {
+                                           Auth0LogoutHandler auth0LogoutHandler) throws Exception {
 
         // Build a local AuthenticationManager scoped to form login and MFA only.
         // This avoids overriding Spring's global manager, which handles OAuth2 login.
