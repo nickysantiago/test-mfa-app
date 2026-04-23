@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
 
-@Component
+// @Component
 public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 
     @Value("${app.keycloak.logout-url}")
