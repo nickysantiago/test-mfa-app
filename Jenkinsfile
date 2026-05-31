@@ -16,7 +16,7 @@ pipeline {
                 }
             }
         }
-	stage('Upload Artifacts to Nexus') {
+	    stage('Upload Artifacts to Nexus') {
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
@@ -54,7 +54,7 @@ pipeline {
 			sh '''
 				scp -o StrictHostKeyChecking=no target/mfa-demo-0.0.1-SNAPSHOT.jar ${TARGET_USER}@${TARGET_HOST}:/home/jenkins/workspace/test-mfa-app/
 				scp -o StrictHostKeyChecking=no Dockerfile ${TARGET_USER}@${TARGET_HOST}:/home/jenkins/workspace/test-mfa-app/
-                		ssh -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} "/home/jenkins/workspace/test-mfa-app/deploy.sh"
+                ssh -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} "/home/jenkins/workspace/test-mfa-app/deploy.sh"
 			'''
 		}
             }
